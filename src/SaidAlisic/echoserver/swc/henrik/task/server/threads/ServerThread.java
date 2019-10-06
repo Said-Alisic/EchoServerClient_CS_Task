@@ -26,19 +26,24 @@ public class ServerThread implements Runnable {
         Thread.currentThread().setName(name);
         System.out.println(Thread.currentThread().getName() + " currently running.");
 
+        String client;
+
         try {
             // Obtain input and output streams from active socket to communicate with client
             // Input stream of client is connected to output stream of server
             PrintWriter clientOut = new PrintWriter(activeSocket.getOutputStream(), true);
             BufferedReader clientIn = new BufferedReader(new InputStreamReader(activeSocket.getInputStream()));
+
             // Echo client input back to client side while the active socket is open
             while(!activeSocket.isClosed()) {
                 System.out.println("Accepted client [" + activeSocket.getRemoteSocketAddress() + "] " +
                         "at socket [" + activeSocket.getLocalSocketAddress() + "]\n\n");
 
+                client = clientIn.readLine();
+
                 String userIn;
                 while ((userIn = clientIn.readLine()) != null) {
-                    clientOut.println("Client input at [" + activeSocket.getLocalAddress() + "]: " + userIn);
+                    clientOut.println("Client input at [(" + client + ")" + activeSocket.getLocalAddress() + "]: " + userIn);
                     System.out.println("Client input: " + userIn);
 
                     if(userIn.equalsIgnoreCase("Disconnect")) {

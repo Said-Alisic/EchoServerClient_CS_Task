@@ -23,11 +23,13 @@ public class ClientThread implements Runnable {
 
         try {
 
+            // Connect client input and output streams to server IO streams
             PrintWriter serverOut = new PrintWriter(activeSocket.getOutputStream(), true);
             BufferedReader serverIn = new BufferedReader(new InputStreamReader(activeSocket.getInputStream()));
             BufferedReader clientIn = new BufferedReader(new InputStreamReader(System.in));
 
             while(!activeSocket.isClosed()) {
+                serverOut.println(name);
                 System.out.println("\n\nWrite 'Disconnect' to terminate connection.\n\n");
 
                 String userIn;
@@ -37,6 +39,12 @@ public class ClientThread implements Runnable {
                     serverOut.println(userIn);
                     System.out.println(serverIn.readLine());
                     System.out.print("Your message: ");
+
+                    if(userIn.equalsIgnoreCase("Disconnect")) {
+                        activeSocket.close();
+                        System.out.println("Disconnected!");
+                        break;
+                    }
                 }
             }
 
