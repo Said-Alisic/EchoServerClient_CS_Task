@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class ServerThread implements Runnable {
 
@@ -30,32 +31,27 @@ public class ServerThread implements Runnable {
             // Input stream of client is connected to output stream of server
             PrintWriter clientOut = new PrintWriter(activeSocket.getOutputStream(), true);
             BufferedReader clientIn = new BufferedReader(new InputStreamReader(activeSocket.getInputStream()));
-
             // Echo client input back to client side while the active socket is open
             while(!activeSocket.isClosed()) {
-                clientOut.println("Successfully connected to " + name);
-                clientOut.println("Client input at [" + activeSocket.getRemoteSocketAddress() + "]:" + clientIn.readLine());
+                System.out.println("Accepted client [" + activeSocket.getRemoteSocketAddress() + "] " +
+                        "at socket [" + activeSocket.getLocalSocketAddress() + "]\n\n");
 
+                String userIn;
+                while ((userIn = clientIn.readLine()) != null) {
+                    clientOut.println("Client input at [" + activeSocket.getLocalAddress() + "]: " + userIn);
+                    System.out.println("Client input: " + userIn);
 
-                BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-                String userInput;
-
-                while ((userInput = stdIn.readLine()) != null) {
-                    clientOut.println(userInput);
-                    System.out.println("echo: " + clientIn.readLine());
-                }
-
-                if(clientIn.readLine().equalsIgnoreCase("Disconnect")) {
-                    clientOut.close();
-                    clientIn.close();
-                    stdIn.close();
-                    activeSocket.close();
-                    System.out.println("Disconnected!");
+                    if(userIn.equalsIgnoreCase("Disconnect")) {
+                        activeSocket.close();
+                        System.out.println("Disconnected!");
+                        break;
+                    }
                 }
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
             System.out.println("Could not accept client connection at host: [" + host + "] - port: [" + port + "]");
         }
+
     }
 }

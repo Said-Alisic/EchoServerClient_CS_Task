@@ -25,15 +25,18 @@ public class ClientThread implements Runnable {
 
             PrintWriter serverOut = new PrintWriter(activeSocket.getOutputStream(), true);
             BufferedReader serverIn = new BufferedReader(new InputStreamReader(activeSocket.getInputStream()));
-            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+            BufferedReader clientIn = new BufferedReader(new InputStreamReader(System.in));
 
             while(!activeSocket.isClosed()) {
-                System.out.println("Write 'Disconnect' to terminate connecting.");
+                System.out.println("\n\nWrite 'Disconnect' to terminate connection.\n\n");
 
                 String userIn;
-                while((userIn = stdIn.readLine()) != null) {
+                System.out.print("Your message: ");
+                while((userIn = clientIn.readLine()) != null) {
+                    System.out.println("\n______________________________________");
                     serverOut.println(userIn);
-                    serverOut.write(serverIn.readLine());
+                    System.out.println(serverIn.readLine());
+                    System.out.print("Your message: ");
                 }
             }
 
