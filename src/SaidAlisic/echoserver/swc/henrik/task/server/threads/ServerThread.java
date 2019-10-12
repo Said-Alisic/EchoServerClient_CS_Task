@@ -1,11 +1,13 @@
 package SaidAlisic.echoserver.swc.henrik.task.server.threads;
 
+import SaidAlisic.echoserver.swc.henrik.task.server.StressTester;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
+
 
 public class ServerThread implements Runnable {
 
@@ -13,6 +15,7 @@ public class ServerThread implements Runnable {
     private Socket activeSocket;
     private String host;
     private int port;
+
 
     public ServerThread(String name, Socket activeSocket, String host, int port) {
         this.name = name;
@@ -27,7 +30,6 @@ public class ServerThread implements Runnable {
         System.out.println(Thread.currentThread().getName() + " currently running.");
 
         String client;
-
         try {
             // Obtain input and output streams from active socket to communicate with client
             // Input stream of client is connected to output stream of server
